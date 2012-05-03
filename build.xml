@@ -60,5 +60,12 @@
     </java>
   </target>
 
+  <target name="log" depends="compile">
+    <java classname="xgen.irc.RoomLogging">
+      <classpath refid="classpath" />
+      <arg value="#fun" />
+    </java>
+  </target>
+
 
 </project>

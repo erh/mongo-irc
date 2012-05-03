@@ -41,7 +41,7 @@ public class IRC {
         root.setLevel( Level.ALL );
         log.setLevel( Level.ALL );
 
-        Context context = new Context();
+        Context context = new Context( port );
         
         Server server = new Server( context , port );
         server.start();

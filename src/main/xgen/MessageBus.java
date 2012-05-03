@@ -2,6 +2,8 @@
 
 package xgen;
 
+import xgen.util.*;
+
 import com.mongodb.*;
 
 import java.util.logging.*;
@@ -58,6 +60,7 @@ public class MessageBus {
             }
             catch ( MongoException me ) {
                 LOG.log( Level.WARNING , "can't read messagebus" , me );
+                ThreadUtil.sleepSafe( 1000 );
             }
 
         }

@@ -78,6 +78,7 @@ public abstract class Command {
         _add( m , new CapCommand() );
         _add( m , new Away() );
         _add( m , new Ping() );
+        _add( m , new LogsCommand() );
         _add( m , RoomCommands.getAll() );
         _commands = Collections.unmodifiableMap( m );
     }

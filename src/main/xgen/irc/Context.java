@@ -3,6 +3,7 @@
 package xgen.irc;
 
 import xgen.*;
+import xgen.util.*;
 
 import com.mongodb.*;
 
@@ -17,21 +18,30 @@ public class Context {
 
     static Logger log = Logger.getLogger( "xgen.irc" );
 
-    public Context() 
+    public Context( int port ) 
         throws java.net.UnknownHostException {
-        _storage = new MongoStorage();
+        _storage = new Storage( this );
         _serverName = InetAddress.getLocalHost().getHostName();
+        _serverIp = InetAddress.getLocalHost().getHostAddress();
+        _port = port;
 
         _bus = _storage.getMessageBus();
         _bus.start( new BusListener( this ) );
+        
+        _logging = _storage.getLogging();
+
+        _pinger = new Pinger();
+        _pinger.start();
+
     }
 
     public Storage getStorage() { return _storage; }
     public String getServerName() { return _serverName; }
+    public int getServerPort() { return _port; } // XXXX
+    public String getServerIpPort() { return _serverIp + "/" + _port; }
+    public String getServerIdent() { return _serverName + ":" + _port; }
 
-    public String getServerIpPort() { 
-        return "127.0.0.1/6667"; // XXX
-    }
+    public RoomLogging getLogging() { return _logging; }
 
     public void connectionOpened( Connection c ) {
         synchronized ( _allConnections ) {
@@ -68,6 +78,7 @@ public class Context {
             _bus.sendMessage( o );
         }
 
+        _logging.log( room , msg );
     }
 
     public List<Person> getInRoom( String room ) {
@@ -91,8 +102,40 @@ public class Context {
     }
 
     
+    class Pinger extends Thread {
+        Pinger() {
+            super( "xgen.irc.Context-PINGER" );
+            setDaemon( true );
+        }
+        
+        public void run() {
+            final int defaultSleepMillis = 1000;
+            int sleepMillis = defaultSleepMillis;
+            
+            while ( true ) {
+                
+                if ( _storage.serverAlivePing( getServerIdent() ) ) {
+                    sleepMillis = defaultSleepMillis;
+                }
+                else {
+                    sleepMillis = Math.min( 1000 * 30 , sleepMillis * 2 );
+                }
+                
+                ThreadUtil.sleepSafe( sleepMillis );
+            }
+        }
+            
+    }
+
     List<Connection> _allConnections = new LinkedList<Connection>();
-    Storage _storage;
-    MessageBus _bus;
-    String _serverName;
+    
+    final Storage _storage;
+    final MessageBus _bus;
+    final RoomLogging _logging;
+
+    final Pinger _pinger;
+
+    final String _serverName;
+    final String _serverIp;
+    final int _port;
 }
