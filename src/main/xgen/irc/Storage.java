@@ -21,7 +21,9 @@ public class Storage {
 
         _context = context;
         
-        _mongo = new Mongo();
+        MongoOptions options = new MongoOptions();
+        options.connectionsPerHost = 100;
+        _mongo = new Mongo( "ircmongo" , options );
         _db = _mongo.getDB( "irc" );
 
         _rooms = _db.getCollection( "rooms" );
