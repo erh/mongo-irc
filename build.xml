@@ -64,6 +64,7 @@
     <java classname="xgen.irc.RoomLogging">
       <classpath refid="classpath" />
       <arg value="#fun" />
+      <arg value="hi" />
     </java>
   </target>
 

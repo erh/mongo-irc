@@ -18,8 +18,16 @@ public class LogsCommand extends Command {
         
         StringUtil.PartitionResult res = StringUtil.partition( extra , " " );
         String room = res.front;
+        extra = res.back.trim();
 
-        List<RoomLogging.LogMessage> logs = context.getLogging().getMessages( room , 10 );
+        List<RoomLogging.LogMessage> logs = null;
+
+        if ( extra.length() > 0 ) {
+            logs = context.getLogging().search( extra );
+        }
+        else {
+            logs = context.getLogging().getMessages( room , 10 );
+        }
         
         Date now = new Date();
 
