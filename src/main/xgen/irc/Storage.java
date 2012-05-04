@@ -50,6 +50,19 @@ public class Storage {
             return new Room( name );
         }
     }
+    
+    public List<Room> getAllRooms() {
+        List<Room> lst = new ArrayList<Room>();
+        try {
+            for ( DBObject x : _rooms.find() ) {
+                lst.add( new Room( x ) );
+            }
+        }
+        catch ( Exception e ) {
+            LOG.log( Level.SEVERE , "couldn't getAllRooms" , e );
+        }
+        return lst;
+    }
 
     public boolean serverAlivePing( String ident ) {
         try {

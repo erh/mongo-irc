@@ -90,12 +90,27 @@ public class RoomCommands {
         }
     }
     
+    public static class LIST extends Command {
+        public LIST() {
+            super( "LIST" );
+        }
+
+        public void handle( Context context , Connection conn , String room ) {
+            for ( Room r : context.getStorage().getAllRooms() ) {
+                conn.sendResponse( 322 , "%s %d :%s" , r.getName() , r.numUsers() , r.getTopic() );
+            }
+            conn.sendResponse( 323 , "" );
+        }
+        
+    }
+    
     public static List<Command> getAll() {
         List<Command> l = new LinkedList<Command>();
         l.add( new Join() );
         l.add( new Part() );
         l.add( new Mode() );
         l.add( new Who() );
+        l.add( new LIST() );
         return l;
     }
 

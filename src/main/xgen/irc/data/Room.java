@@ -2,6 +2,8 @@
 
 package xgen.irc.data;
 
+import java.util.Date;
+
 import com.mongodb.*;
 import org.bson.*;
 
@@ -10,17 +12,25 @@ public class Room {
     public Room( BSONObject data ) {
         _name = data.get( "_id" ).toString();
         _topic = data.get( "topic" ).toString();
-        _created = (java.util.Date)data.get( "created" );
+        _created = (Date)data.get( "created" );
+        _users = (BSONObject)data.get( "users" );
     }
 
     public Room( String name ) {
         _name = name;
         _topic = "not set";
         _created = new java.util.Date();
+        _users = new BasicDBObject();
     }
 
     public String getName() { return _name; }
     public String getTopic() { return _topic; }
+
+    public int numUsers() {
+        if ( _users == null )
+            return 0;
+        return _users.keySet().size();
+    }
 
     public DBObject toObject() {
         BasicDBObject o = new BasicDBObject();
@@ -32,7 +42,9 @@ public class Room {
 
     final String _name;
     final String _topic;
-    final java.util.Date _created;
+    final Date _created;
+    final BSONObject _users;
+
     // ------
     
     public static void main( String[] args ) 
