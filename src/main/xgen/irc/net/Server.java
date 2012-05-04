@@ -23,7 +23,7 @@ public class Server {
     public void start() 
         throws java.io.IOException {
 
-        SocketAcceptor acceptor = new NioSocketAcceptor(1);
+        SocketAcceptor acceptor = new NioSocketAcceptor(50);
         acceptor.setReuseAddress( true );
 
         acceptor.getFilterChain().addLast( "protocolFilter", new ProtocolCodecFilter( new org.apache.mina.filter.codec.textline.TextLineCodecFactory() ) );

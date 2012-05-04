@@ -34,11 +34,34 @@ public abstract class Connection extends Person {
         synchronized ( _rooms ) {
             _rooms.add( room );
         }
+        
+        _context.getStorage().roomAdd( room , _nick );
+    }
+
+    public void leftRoom( String room ) {
+        synchronized ( _rooms ) {
+            _rooms.remove( room );
+        }
+
+        _context.getStorage().roomRemove( room , _nick );
+        
+        _context.sendToRoom( room , ":" + ident() + " PART " + room , null , true );
     }
 
     public boolean inRoom( String name ) {
         synchronized ( _rooms ) {
             return _rooms.contains( name );
+        }
+    }
+
+    public void closed() {
+        Set<String> rooms = new TreeSet<String>();
+        synchronized ( _rooms ) {
+            rooms.addAll( _rooms );
+        }
+        
+        for ( String room : rooms ) {
+            leftRoom( room );
         }
     }
 

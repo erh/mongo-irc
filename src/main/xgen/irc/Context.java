@@ -55,6 +55,7 @@ public class Context {
             _allConnections.remove( c );
             System.out.println( "# connections: " + _allConnections.size() );
         }
+        c.closed();
     }
 
     public int getNumberClients() {
@@ -88,6 +89,7 @@ public class Context {
                 if ( c.inRoom( room ) )
                     in.add( c );
         }
+        in.addAll( _storage.getOthersInRoom( room ) );
         return in;
     }
 

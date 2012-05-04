@@ -4,6 +4,7 @@ package xgen.irc.commands;
 
 import java.util.*;
 
+import xgen.util.*;
 import xgen.irc.*;
 import xgen.irc.data.*;
 
@@ -48,6 +49,20 @@ public class RoomCommands {
 
     }
 
+    public static class Part extends Command {
+        public Part() {
+            super( "PART" );
+        }
+
+        public void handle( Context context , Connection conn , String room ) {
+            String[] rooms = StringUtil.partition( room , " " ).front.split(",");
+            for ( int i=0; i<rooms.length; i++ ) {
+                conn.leftRoom( rooms[i] );
+            }
+        }
+
+    }
+
     public static class Mode extends Command {
         public Mode() {
             super( "MODE" );
@@ -78,6 +93,7 @@ public class RoomCommands {
     public static List<Command> getAll() {
         List<Command> l = new LinkedList<Command>();
         l.add( new Join() );
+        l.add( new Part() );
         l.add( new Mode() );
         l.add( new Who() );
         return l;

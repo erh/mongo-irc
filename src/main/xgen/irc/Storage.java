@@ -9,6 +9,7 @@ import xgen.irc.data.*;
 import com.mongodb.*;
 import org.bson.*;
 
+import java.util.*;
 import java.util.logging.*;
 
 public class Storage {
@@ -61,6 +62,61 @@ public class Storage {
             LOG.log( Level.WARNING , "couldn't ping server" , me );
             return false;
         }
+    }
+
+    public void roomAdd( String room , String nick ) {
+        loadRoom( room );
+        _rooms.update( new BasicDBObject( "_id" , room ) , 
+                       new BasicDBObject( "$set" , 
+                                          new BasicDBObject( "users." + nick , _context.getServerIdent() ) ) );
+    }
+    
+    public void roomRemove( String room , String nick ) {
+        _rooms.update( new BasicDBObject( "_id" , room ) , 
+                       new BasicDBObject( "$unset" , 
+                                          new BasicDBObject( "users." + nick , 1 ) ) );
+
+    }
+
+    public List<Person> getOthersInRoom( String room ) {
+        List<Person> lst = new LinkedList<Person>();
+        
+        try {
+            DBObject o = _rooms.findOne( new BasicDBObject( "_id" , room ) );
+            if ( o == null )
+                return lst;
+            o = (DBObject)o.get( "users" );
+            if ( o == null )
+                return lst;
+            
+            for ( String key : o.keySet() ) {
+                if ( o.get( key ).equals( _context.getServerIdent() ) )
+                    continue;
+                lst.add( new MyPerson( key , key , o.get( key ).toString() ) );
+            }
+        }
+        catch ( MongoException me ) {
+            LOG.log( Level.WARNING , "couldn't load people in room" , me );
+        }
+        return lst;
+            
+    }
+
+    static class MyPerson extends Person {
+        public MyPerson( String n , String u , String h ) {
+            nick = n;
+            user = u;
+            host = h;
+        }
+        
+        public String nickName() { return nick; }
+        public String userName() { return user; }
+        public String host() { return host; }
+
+
+        final String nick;
+        final String user;
+        final String host;
     }
 
     final Context _context;
