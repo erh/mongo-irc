@@ -23,7 +23,9 @@ public class Storage {
         
         MongoOptions options = new MongoOptions();
         options.connectionsPerHost = 100;
-        _mongo = new Mongo( "ircmongo" , options );
+        List<ServerAddress> addrs = new ArrayList<ServerAddress>();
+        addrs.add( new ServerAddress( "ircmongo" ) );
+        _mongo = new Mongo( addrs , options );
         _db = _mongo.getDB( "irc" );
 
         _rooms = _db.getCollection( "rooms" );
