@@ -43,7 +43,7 @@
     <java classname="xgen.irc.IRC">
       <classpath refid="classpath" />
       <arg value="--port" />
-      <arg value="6668" />
+      <arg value="80" />
     </java>
   </target>
 
