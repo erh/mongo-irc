@@ -43,6 +43,14 @@
     <java classname="xgen.irc.IRC">
       <classpath refid="classpath" />
       <arg value="--port" />
+      <arg value="6668" />
+    </java>
+  </target>
+  
+   <target name="run80" depends="compile">
+    <java classname="xgen.irc.IRC">
+      <classpath refid="classpath" />
+      <arg value="--port" />
       <arg value="80" />
     </java>
   </target>
