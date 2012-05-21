@@ -11,6 +11,9 @@ To run on port 6668:
 
   * `ant run2`
 
+To run on port 80:
+  * `ant run80`
+
 
 Extra Features:
 
