@@ -125,6 +125,10 @@ public class RoomLogging {
             
             DBObject res = _db.command( cmd );
             List results = (List)res.get( "results" );
+            if ( results == null ) {
+                LOG.log( Level.WARNING , "can't do fts query: " + res );
+                return lst;
+            }
             for ( Object raw : results ) {
                 DBObject scored = (DBObject)raw;
                 DBObject bucket = (DBObject)scored.get( "obj" );
