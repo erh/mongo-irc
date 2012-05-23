@@ -210,17 +210,28 @@ public class RoomLogging {
         DB db = m.getDB( "irc" );
 
         RoomLogging log = new RoomLogging( db );        
-        
-        System.out.println( "----" );
-        
-        for ( LogMessage msg : log.getMessages( args[0] , 10 ) ) {
-            System.out.println( msg );
-        }
 
-        System.out.println( "----" );
-        
-        for ( LogMessage msg : log.search( args[1] ) ) {
-            System.out.println( msg );
+        if ( args.length > 0 ) {
+            for ( int i=0; i<Integer.parseInt(args[0]); i++ ) {
+                String room = "#dummy" + (int)(100*Math.random());
+                System.out.println( room );
+                log.log( room , "this is a dummy message: " + Math.random() );
+                if ( i % 10 == 0 ) 
+                    log._db.getLastError( 2 , 0 , false );
+            }
+        }
+        else {
+            System.out.println( "----" );
+            
+            for ( LogMessage msg : log.getMessages( args[0] , 10 ) ) {
+                System.out.println( msg );
+            }
+            
+            System.out.println( "----" );
+            
+            for ( LogMessage msg : log.search( args[1] ) ) {
+                System.out.println( msg );
+            }
         }
 
         
